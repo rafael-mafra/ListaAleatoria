@@ -3,7 +3,7 @@ const initialData = [
     {
         id: 1,
         nome: "Dr. João Silva",
-        categoria: "medico",
+        categorias: ["medico"],
         especialidade: "Ortopedista e Traumatologista",
         telefone: "(11) 99876-5432",
         email: "joao.silva@email.com",
@@ -16,7 +16,7 @@ const initialData = [
     {
         id: 2,
         nome: "Carlos Mendes",
-        categoria: "pedreiro",
+        categorias: ["pedreiro", "encanador"],
         especialidade: "Reformas completas e acabamentos",
         telefone: "(11) 98765-4321",
         email: "",
@@ -29,7 +29,7 @@ const initialData = [
     {
         id: 3,
         nome: "Maria Oliveira",
-        categoria: "encanador",
+        categorias: ["encanador", "servicos_gerais"],
         especialidade: "Hidráulica em geral",
         telefone: "(11) 97654-3210",
         email: "maria.oliveira@email.com",
@@ -42,7 +42,7 @@ const initialData = [
     {
         id: 4,
         nome: "Paulo Santos",
-        categoria: "eletricista",
+        categorias: ["eletricista"],
         especialidade: "Instalações elétricas residenciais",
         telefone: "(11) 96543-2109",
         email: "",
@@ -55,7 +55,7 @@ const initialData = [
     {
         id: 5,
         nome: "Ana Costa",
-        categoria: "servicos_gerais",
+        categorias: ["servicos_gerais", "pedreiro"],
         especialidade: "Limpeza e organização",
         telefone: "(11) 95432-1098",
         email: "ana.costa@email.com",
@@ -68,7 +68,7 @@ const initialData = [
     {
         id: 6,
         nome: "Roberto Ferreira",
-        categoria: "pedreiro",
+        categorias: ["pedreiro", "eletricista"],
         especialidade: "Masonry e alvenaria",
         telefone: "(11) 94321-0987",
         email: "",
@@ -194,14 +194,14 @@ class ProfessionalsApp {
             const matchesSearch = p.nome.toLowerCase().includes(searchTerm) ||
                                 p.especialidade.toLowerCase().includes(searchTerm) ||
                                 p.observacoes.toLowerCase().includes(searchTerm);
-            const matchesCategory = !category || p.categoria === category;
+            const matchesCategory = !category || p.categorias.includes(category);
             return matchesSearch && matchesCategory;
         });
         
         // Ordenação
         this.filteredProfessionals.sort((a, b) => {
             if (sortBy === 'nome') return a.nome.localeCompare(b.nome);
-            if (sortBy === 'categoria') return a.categoria.localeCompare(b.categoria);
+            if (sortBy === 'categoria') return a.categorias[0].localeCompare(b.categorias[0]);
             if (sortBy === 'nota') return b.nota - a.nota;
             if (sortBy === 'dataCadastro') return new Date(b.dataCadastro) - new Date(a.dataCadastro);
             return 0;
@@ -271,13 +271,18 @@ class ProfessionalsApp {
         
         const stars = this.createStars(professional.nota);
         
+        // Criar tags de categorias
+        const categoriesTags = professional.categorias.map(cat => 
+            `<span class="card-category">
+                <i class="fas ${categoryIcons[cat]}"></i>
+                ${categoryNames[cat]}
+            </span>`
+        ).join('');
+        
         return `
             <div class="professional-card" data-id="${professional.id}">
                 <div class="card-header">
-                    <span class="card-category">
-                        <i class="fas ${categoryIcons[professional.categoria]}"></i>
-                        ${categoryNames[professional.categoria]}
-                    </span>
+                    <div class="card-categories">${categoriesTags}</div>
                 </div>
                 <div class="card-body">
                     <h3 class="card-name">${professional.nome}</h3>
@@ -336,14 +341,19 @@ class ProfessionalsApp {
         
         const stars = this.createStars(professional.nota);
         
+        // Criar tags de categorias
+        const categoriesTags = professional.categorias.map(cat => 
+            `<span class="table-category">
+                <i class="fas ${categoryIcons[cat]}"></i>
+                ${categoryNames[cat]}
+            </span>`
+        ).join(' ');
+        
         return `
             <tr data-id="${professional.id}">
                 <td class="table-name">${professional.nome}</td>
                 <td>
-                    <span class="table-category">
-                        <i class="fas ${categoryIcons[professional.categoria]}"></i>
-                        ${categoryNames[professional.categoria]}
-                    </span>
+                    <div class="table-categories">${categoriesTags}</div>
                 </td>
                 <td class="table-specialty">${professional.especialidade || '-'}</td>
                 <td class="table-phone">${professional.telefone}</td>
@@ -453,7 +463,6 @@ class ProfessionalsApp {
     fillForm(professional) {
         document.getElementById('professionalId').value = professional.id;
         document.getElementById('name').value = professional.nome;
-        document.getElementById('category').value = professional.categoria;
         document.getElementById('specialty').value = professional.especialidade;
         document.getElementById('phone').value = professional.telefone;
         document.getElementById('email').value = professional.email;
@@ -461,6 +470,11 @@ class ProfessionalsApp {
         document.getElementById('neighborhood').value = professional.bairro;
         document.getElementById('notes').value = professional.observacoes;
         document.getElementById('rating').value = professional.nota;
+        
+        // Preencher checkboxes de categorias
+        document.querySelectorAll('input[name="categories"]').forEach(checkbox => {
+            checkbox.checked = professional.categorias.includes(checkbox.value);
+        });
         
         this.currentRating = professional.nota;
         this.updateRatingStars();
@@ -472,15 +486,31 @@ class ProfessionalsApp {
         document.getElementById('professionalId').value = '';
         this.currentRating = 0;
         this.updateRatingStars();
+        // Desmarcar todos os checkboxes
+        document.querySelectorAll('input[name="categories"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
     }
 
     // Lidar com envio do formulário
     handleSubmit(e) {
         e.preventDefault();
         
+        // Obter categorias selecionadas
+        const selectedCategories = [];
+        document.querySelectorAll('input[name="categories"]:checked').forEach(checkbox => {
+            selectedCategories.push(checkbox.value);
+        });
+        
+        // Validar se pelo menos uma categoria foi selecionada
+        if (selectedCategories.length === 0) {
+            this.showToast('Selecione pelo menos uma categoria!', 'error');
+            return;
+        }
+        
         const formData = {
             nome: document.getElementById('name').value.trim(),
-            categoria: document.getElementById('category').value,
+            categorias: selectedCategories,
             especialidade: document.getElementById('specialty').value.trim(),
             telefone: document.getElementById('phone').value.trim(),
             email: document.getElementById('email').value.trim(),
@@ -598,7 +628,9 @@ class ProfessionalsApp {
         const avgRating = total > 0 
             ? (this.professionals.reduce((sum, p) => sum + p.nota, 0) / total).toFixed(1)
             : 0;
-        const categories = new Set(this.professionals.map(p => p.categoria)).size;
+        // Contar categorias únicas
+        const allCategories = this.professionals.flatMap(p => p.categorias);
+        const categories = new Set(allCategories).size;
         
         document.getElementById('totalProfissionais').textContent = total;
         document.getElementById('mediaNotas').textContent = avgRating;

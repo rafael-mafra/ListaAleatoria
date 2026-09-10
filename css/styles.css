@@ -290,6 +290,12 @@ body {
     font-size: 0.875rem;
 }
 
+.table-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
 .table-specialty {
     color: var(--text-secondary);
     font-size: 0.9rem;
@@ -400,6 +406,12 @@ body {
     padding: 1rem 1.5rem;
     background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
     border-bottom: 1px solid var(--border-color);
+}
+
+.card-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .card-category {
@@ -642,6 +654,72 @@ body {
 .rating-input i:hover,
 .rating-input i.active {
     color: var(--warning-color);
+}
+
+/* Checkboxes de Categoria */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: white;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+}
+
+.checkbox-label:hover {
+    background: #f1f5f9;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
+    content: '✓';
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.checkbox-label input[type="checkbox"]:checked ~ span:last-child {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.checkbox-label i {
+    color: var(--text-secondary);
+}
+
+.checkbox-label input[type="checkbox"]:checked ~ i {
+    color: var(--primary-color);
 }
 
 .form-actions {
