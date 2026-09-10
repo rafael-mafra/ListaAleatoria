@@ -26,13 +26,13 @@
         <section class="filters-section">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Buscar profissional por nome, especialidade...">
+                <input type="text" id="searchInput" class="input" placeholder="Buscar profissional por nome, especialidade...">
             </div>
             
             <div class="filters-row">
                 <div class="filter-group">
                     <label for="categoryFilter">Categoria:</label>
-                    <select id="categoryFilter">
+                    <select id="categoryFilter" class="select">
                         <option value="">Todas as categorias</option>
                         <option value="medico">Médico</option>
                         <option value="pedreiro">Pedreiro</option>
@@ -45,7 +45,7 @@
                 
                 <div class="filter-group">
                     <label for="sortOrder">Ordenar por:</label>
-                    <select id="sortOrder">
+                    <select id="sortOrder" class="select">
                         <option value="nome">Nome</option>
                         <option value="categoria">Categoria</option>
                         <option value="nota">Nota</option>
@@ -128,13 +128,13 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="name">Nome Completo *</label>
-                        <input type="text" id="name" required>
+                        <input type="text" id="name" class="input" required>
                     </div>
                     
                     <div class="form-group">
                         <label>Categorias * (segure Ctrl para selecionar várias)</label>
                         <div class="category-select-container">
-                            <select id="categorySelect" multiple size="4">
+                            <select id="categorySelect" class="select" multiple size="4">
                                 <option value="medico">Médico</option>
                                 <option value="pedreiro">Pedreiro</option>
                                 <option value="encanador">Encanador</option>
@@ -153,7 +153,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="specialty">Especialidade/Descrição</label>
-                        <input type="text" id="specialty" placeholder="Ex: Ortopedista, Reformas completas...">
+                        <input type="text" id="specialty" class="input" placeholder="Ex: Ortopedista, Reformas completas...">
                     </div>
                     
                     <div class="form-group">
@@ -172,30 +172,30 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="phone">Telefone/WhatsApp *</label>
-                        <input type="tel" id="phone" placeholder="(00) 00000-0000" required>
+                        <input type="tel" id="phone" class="input" placeholder="(00) 00000-0000" required>
                     </div>
                     
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" placeholder="email@exemplo.com">
+                        <input type="email" id="email" class="input" placeholder="email@exemplo.com">
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="address">Endereço</label>
-                        <input type="text" id="address" placeholder="Rua, número, bairro...">
+                        <input type="text" id="address" class="input" placeholder="Rua, número, bairro...">
                     </div>
                     
                     <div class="form-group">
                         <label for="neighborhood">Bairro</label>
-                        <input type="text" id="neighborhood">
+                        <input type="text" id="neighborhood" class="input">
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="notes">Observações</label>
-                    <textarea id="notes" rows="3" placeholder="Informações adicionais sobre o profissional..."></textarea>
+                    <textarea id="notes" class="input textarea" rows="3" placeholder="Informações adicionais sobre o profissional..."></textarea>
                 </div>
                 
                 <div class="form-actions">
@@ -256,19 +256,19 @@
         </div>
     </div>
 
-    <!-- Toast de Notificação -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Lista de Indicações de Profissionais. Todos os direitos reservados ao grupo Aleatórios SERPRO.</p>
+        </div>
+    </footer>
+
+    <!-- Toast de Notificação (centro superior) -->
     <div id="toast" class="toast">
         <div class="toast-content">
             <i id="toastIcon" class="fas fa-check-circle"></i>
             <span id="toastMessage">Operação realizada com sucesso!</span>
         </div>
     </div>
-
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 Lista de Indicações de Profissionais. Todos os direitos reservados ao grupo Aleatórios SERPRO.</p>
-        </div>
-    </footer>
 
     <script src="js/app.js"></script>
 </body>

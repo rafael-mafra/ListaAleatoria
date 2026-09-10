@@ -536,13 +536,15 @@ main {
 
 .toast-container {
     position: fixed;
-    bottom: 1rem;
-    right: 1rem;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 100;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     max-width: 24rem;
+    width: calc(100% - 2rem);
 }
 
 .toast {
@@ -554,18 +556,16 @@ main {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
-    animation: toast-in 0.3s ease-out;
+    opacity: 0;
+    transform: translateY(-100%);
+    transition: all 0.3s ease;
+    pointer-events: none;
 }
 
-@keyframes toast-in {
-    from {
-        opacity: 0;
-        transform: translateY(100%);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .toast-icon {
