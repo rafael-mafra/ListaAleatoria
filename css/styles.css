@@ -722,6 +722,98 @@ body {
     color: var(--primary-color);
 }
 
+/* Select de Categorias */
+.category-select-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+
+#categorySelect {
+    flex: 1;
+    padding: 0.5rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    min-height: 100px;
+    background: white;
+    cursor: pointer;
+}
+
+#categorySelect:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+#categorySelect option {
+    padding: 0.5rem;
+    margin: 2px 0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#categorySelect option:hover {
+    background: #f1f5f9;
+}
+
+#categorySelect option:checked {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-add-category {
+    padding: 0.75rem 1rem;
+    background: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    height: fit-content;
+}
+
+.btn-add-category:hover {
+    background: #16a34a;
+    transform: translateY(-1px);
+}
+
+.selected-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    min-height: 24px;
+}
+
+.selected-category-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.selected-category-tag i {
+    cursor: pointer;
+    opacity: 0.8;
+    transition: var(--transition);
+}
+
+.selected-category-tag i:hover {
+    opacity: 1;
+}
+
+.help-text {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
 .form-actions {
     display: flex;
     justify-content: flex-end;

@@ -97,6 +97,7 @@ class ProfessionalsApp {
 
     init() {
         this.loadData();
+        this.updateCategorySelect();
         this.bindEvents();
         this.setView('list'); // Visualização padrão: lista
         this.render();
@@ -150,6 +151,22 @@ class ProfessionalsApp {
         // Formulário
         document.getElementById('professionalForm').addEventListener('submit', (e) => this.handleSubmit(e));
         
+        // Select de categorias
+        document.getElementById('categorySelect').addEventListener('change', (e) => this.updateSelectedCategories());
+        
+        // Botão de adicionar categoria
+        document.getElementById('addCategoryBtn').addEventListener('click', () => this.openCategoryModal());
+        
+        // Modal de adicionar categoria
+        document.getElementById('closeCategoryModal').addEventListener('click', () => this.closeCategoryModal());
+        document.getElementById('cancelCategoryBtn').addEventListener('click', () => this.closeCategoryModal());
+        document.getElementById('confirmCategoryBtn').addEventListener('click', () => this.addNewCategory());
+        
+        // Fechar modal de categoria ao clicar fora
+        document.getElementById('categoryModal').addEventListener('click', (e) => {
+            if (e.target.id === 'categoryModal') this.closeCategoryModal();
+        });
+        
         // Avaliação (estrelas)
         document.querySelectorAll('.rating-input i').forEach(star => {
             star.addEventListener('click', (e) => this.handleRating(e));
@@ -182,6 +199,164 @@ class ProfessionalsApp {
         document.getElementById('gridView').style.display = view === 'grid' ? 'grid' : 'none';
         
         this.render();
+    }
+
+    // Carregar categorias customizadas
+    loadCustomCategories() {
+        const saved = localStorage.getItem('customCategories');
+        return saved ? JSON.parse(saved) : [];
+    }
+
+    // Salvar categorias customizadas
+    saveCustomCategories(categories) {
+        localStorage.setItem('customCategories', JSON.stringify(categories));
+    }
+
+    // Atualizar select de categorias com customizadas
+    updateCategorySelect() {
+        const select = document.getElementById('categorySelect');
+        const filterSelect = document.getElementById('categoryFilter');
+        const customCategories = this.loadCustomCategories();
+        
+        // Categorias padrão
+        const defaultCategories = [
+            { value: 'medico', name: 'Médico', icon: 'fa-user-md' },
+            { value: 'pedreiro', name: 'Pedreiro', icon: 'fa-hammer' },
+            { value: 'encanador', name: 'Encanador', icon: 'fa-faucet' },
+            { value: 'eletricista', name: 'Eletricista', icon: 'fa-bolt' },
+            { value: 'servicos_gerais', name: 'Serviços Gerais', icon: 'fa-broom' },
+            { value: 'outro', name: 'Outro', icon: 'fa-briefcase' }
+        ];
+        
+        // Combinar categorias padrão com customizadas
+        const allCategories = [...defaultCategories, ...customCategories];
+        
+        // Limpar e popular select de categorias (formulário)
+        select.innerHTML = allCategories.map(cat => 
+            `<option value="${cat.value}">${cat.name}</option>`
+        ).join('');
+        
+        // Atualizar select de filtro (apenas categorias usadas)
+        const usedCategories = [...new Set(this.professionals.flatMap(p => p.categorias))];
+        filterSelect.innerHTML = '<option value="">Todas as categorias</option>' + 
+            allCategories
+                .filter(cat => usedCategories.includes(cat.value))
+                .map(cat => `<option value="${cat.value}">${cat.name}</option>`)
+                .join('');
+    }
+
+    // Atualizar categorias selecionadas (tags)
+    updateSelectedCategories() {
+        const select = document.getElementById('categorySelect');
+        const container = document.getElementById('selectedCategories');
+        const selectedOptions = Array.from(select.selectedOptions).map(opt => opt.value);
+        
+        const categoryNames = this.getCategoryNames();
+        
+        container.innerHTML = selectedOptions.map(cat => 
+            `<span class="selected-category-tag">
+                <i class="fas fa-times-circle" data-category="${cat}"></i>
+                ${categoryNames[cat] || cat}
+            </span>`
+        ).join('');
+        
+        // Adicionar eventos para remover categorias
+        container.querySelectorAll('i').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                const category = e.target.dataset.category;
+                this.removeCategory(category);
+            });
+        });
+    }
+
+    // Remover categoria selecionada
+    removeCategory(category) {
+        const select = document.getElementById('categorySelect');
+        const option = select.querySelector(`option[value="${category}"]`);
+        if (option) {
+            option.selected = false;
+        }
+        this.updateSelectedCategories();
+    }
+
+    // Obter nomes das categorias
+    getCategoryNames() {
+        const customCategories = this.loadCustomCategories();
+        const defaultCategories = {
+            'medico': 'Médico',
+            'pedreiro': 'Pedreiro',
+            'encanador': 'Encanador',
+            'eletricista': 'Eletricista',
+            'servicos_gerais': 'Serviços Gerais',
+            'outro': 'Outro'
+        };
+        
+        customCategories.forEach(cat => {
+            defaultCategories[cat.value] = cat.name;
+        });
+        
+        return defaultCategories;
+    }
+
+    // Abrir modal de adicionar categoria
+    openCategoryModal() {
+        document.getElementById('categoryModal').classList.add('active');
+        document.getElementById('newCategoryName').value = '';
+        document.getElementById('newCategoryIcon').value = 'fa-briefcase';
+        document.getElementById('newCategoryName').focus();
+    }
+
+    // Fechar modal de adicionar categoria
+    closeCategoryModal() {
+        document.getElementById('categoryModal').classList.remove('active');
+    }
+
+    // Adicionar nova categoria
+    addNewCategory() {
+        const name = document.getElementById('newCategoryName').value.trim();
+        const icon = document.getElementById('newCategoryIcon').value.trim();
+        
+        if (!name) {
+            this.showToast('Digite o nome da categoria!', 'error');
+            return;
+        }
+        
+        // Criar valor da categoria (slug)
+        const value = name.toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]/g, '_')
+            .replace(/_+/g, '_');
+        
+        // Verificar se já existe
+        const customCategories = this.loadCustomCategories();
+        if (customCategories.some(cat => cat.value === value)) {
+            this.showToast('Esta categoria já existe!', 'error');
+            return;
+        }
+        
+        // Adicionar nova categoria
+        const newCategory = {
+            value: value,
+            name: name,
+            icon: icon || 'fa-briefcase'
+        };
+        
+        customCategories.push(newCategory);
+        this.saveCustomCategories(customCategories);
+        
+        // Atualizar selects
+        this.updateCategorySelect();
+        
+        // Selecionar a nova categoria no select
+        const select = document.getElementById('categorySelect');
+        const newOption = select.querySelector(`option[value="${value}"]`);
+        if (newOption) {
+            newOption.selected = true;
+        }
+        this.updateSelectedCategories();
+        
+        this.closeCategoryModal();
+        this.showToast('Categoria adicionada com sucesso!', 'success');
     }
 
     // Busca e filtros
@@ -440,6 +615,9 @@ class ProfessionalsApp {
         const modal = document.getElementById('professionalModal');
         const title = document.getElementById('modalTitle');
         
+        // Atualizar select de categorias
+        this.updateCategorySelect();
+        
         if (id) {
             title.textContent = 'Editar Profissional';
             const professional = this.professionals.find(p => p.id === id);
@@ -471,10 +649,12 @@ class ProfessionalsApp {
         document.getElementById('notes').value = professional.observacoes;
         document.getElementById('rating').value = professional.nota;
         
-        // Preencher checkboxes de categorias
-        document.querySelectorAll('input[name="categories"]').forEach(checkbox => {
-            checkbox.checked = professional.categorias.includes(checkbox.value);
+        // Preencher select de categorias
+        const select = document.getElementById('categorySelect');
+        Array.from(select.options).forEach(option => {
+            option.selected = professional.categorias.includes(option.value);
         });
+        this.updateSelectedCategories();
         
         this.currentRating = professional.nota;
         this.updateRatingStars();
@@ -486,10 +666,12 @@ class ProfessionalsApp {
         document.getElementById('professionalId').value = '';
         this.currentRating = 0;
         this.updateRatingStars();
-        // Desmarcar todos os checkboxes
-        document.querySelectorAll('input[name="categories"]').forEach(checkbox => {
-            checkbox.checked = false;
+        // Desmarcar todas as opções do select
+        const select = document.getElementById('categorySelect');
+        Array.from(select.options).forEach(option => {
+            option.selected = false;
         });
+        this.updateSelectedCategories();
     }
 
     // Lidar com envio do formulário
@@ -497,10 +679,8 @@ class ProfessionalsApp {
         e.preventDefault();
         
         // Obter categorias selecionadas
-        const selectedCategories = [];
-        document.querySelectorAll('input[name="categories"]:checked').forEach(checkbox => {
-            selectedCategories.push(checkbox.value);
-        });
+        const select = document.getElementById('categorySelect');
+        const selectedCategories = Array.from(select.selectedOptions).map(opt => opt.value);
         
         // Validar se pelo menos uma categoria foi selecionada
         if (selectedCategories.length === 0) {
@@ -615,6 +795,7 @@ class ProfessionalsApp {
         if (this.deletingId) {
             this.professionals = this.professionals.filter(p => p.id !== this.deletingId);
             this.saveData();
+            this.updateCategorySelect();
             this.handleSearch();
             this.updateStats();
             this.showToast('Profissional excluído com sucesso!', 'success');
