@@ -5,6 +5,7 @@ Uma página web pública para gerenciar e exibir indicações de profissionais (
 ## 🚀 Funcionalidades
 
 - ✅ Cadastro de profissionais com dados completos
+- ✅ **Múltiplas categorias por profissional** (ex: Pedreiro e Encanador)
 - ✅ Busca dinâmica por nome, especialidade ou observações
 - ✅ Filtragem por categoria
 - ✅ Ordenação por nome, categoria, nota ou data de cadastro
