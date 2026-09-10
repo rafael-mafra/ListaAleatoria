@@ -383,8 +383,9 @@ class ProfessionalsApp {
             { value: 'outro', name: 'Outro', icon: 'fa-briefcase' }
         ];
         
-        // Combinar categorias padrão com customizadas
-        const allCategories = [...defaultCategories, ...customCategories];
+        // Combinar categorias padrão com customizadas e ordenar alfabeticamente
+        const allCategories = [...defaultCategories, ...customCategories]
+            .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
         
         // Limpar e popular select de categorias (formulário)
         select.innerHTML = allCategories.map(cat => 
