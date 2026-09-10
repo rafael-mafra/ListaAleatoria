@@ -78,6 +78,13 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
 }
 
 /* ========================================
@@ -1115,7 +1122,7 @@ body {
     background-color: hsl(var(--muted));
     border-top: 1px solid hsl(var(--border));
     padding: 1.5rem 0;
-    margin-top: 2rem;
+    margin-top: auto;
 }
 
 .footer p {
