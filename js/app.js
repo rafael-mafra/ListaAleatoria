@@ -93,28 +93,159 @@ class ProfessionalsApp {
         this.currentView = 'list'; // 'list' ou 'grid'
         this.selectedIcon = 'fa-briefcase'; // Ícone padrão
         
-        // Lista de ícones disponíveis para seleção
-        this.availableIcons = [
-            'fa-user-md', 'fa-user-nurse', 'fa-user-injured', 'fa-tooth', 'fa-brain', 'fa-heart', 'fa-eye',
-            'fa-hammer', 'fa-wrench', 'fa-screwdriver', 'fa-hard-hat', 'fa-drafting-compass', 'fa-ruler-combined',
-            'fa-faucet', 'fa-shower', 'fa-toilet', 'fa-bath', 'fa-hot-tub', 'fa-pipe-slice',
-            'fa-bolt', 'fa-plug', 'fa-lightbulb', 'fa-fan', 'fa-thermometer-half', 'fa-wind',
-            'fa-broom', 'fa-spray-can', 'fa-recycle', 'fa-trash', 'fa-dumpster', 'fa-box-open',
-            'fa-car', 'fa-truck', 'fa-bus', 'fa-motorcycle', 'fa-bicycle', 'fa-plane',
-            'fa-home', 'fa-building', 'fa-warehouse', 'fa-store', 'fa-hotel', 'fa-hospital',
-            'fa-utensils', 'fa-utensil-spoon', 'fa-coffee', 'fa-wine-glass', 'fa-beer', 'fa-blender',
-            'fa-laptop', 'fa-desktop', 'fa-tablet-alt', 'fa-mobile-alt', 'fa-print', 'fa-keyboard',
-            'fa-camera', 'fa-video', 'fa-music', 'fa-microphone', 'fa-headphones', 'fa-volume-up',
-            'fa-book', 'fa-book-open', 'fa-graduation-cap', 'fa-chalkboard-teacher', 'fa-pen', 'fa-pencil-alt',
-            'fa-briefcase', 'fa-balance-scale', 'fa-gavel', 'fa-user-tie', 'fa-users', 'fa-user-plus',
-            'fa-heart', 'fa-hand-holding-heart', 'fa-hands-helping', 'fa-donate', 'fa-gift', 'fa-umbrella',
-            'fa-shield-alt', 'fa-lock', 'fa-key', 'fa-fingerprint', 'fa-id-card', 'fa-passport',
-            'fa-clock', 'fa-calendar', 'fa-bell', 'fa-envelope', 'fa-phone', 'fa-map-marker-alt',
-            'fa-star', 'fa-award', 'fa-trophy', 'fa-medal', 'fa-certificate', 'fa-check-circle',
-            'fa-leaf', 'fa-tree', 'fa-seedling', 'fa-sun', 'fa-cloud', 'fa-water',
-            'fa-dog', 'fa-cat', 'fa-paw', 'fa-fish', 'fa-dove', 'fa-horse',
-            'fa-shopping-cart', 'fa-shopping-bag', 'fa-credit-card', 'fa-wallet', 'fa-money-bill', 'fa-coins'
-        ];
+        // Mapeamento automático de palavras-chave para ícones
+        this.iconMapping = {
+            // Médico/Saúde
+            'medico': 'fa-user-md', 'medica': 'fa-user-md', 'medicos': 'fa-user-md',
+            'doutor': 'fa-user-md', 'doutora': 'fa-user-md', 'clinico': 'fa-user-md',
+            'ortopedista': 'fa-user-injured', 'ortopedia': 'fa-user-injured',
+            'dentista': 'fa-tooth', 'odontologista': 'fa-tooth', 'dentista': 'fa-tooth',
+            'oftalmologista': 'fa-eye', 'oftalmologia': 'fa-eye',
+            'neurologista': 'fa-brain', 'neurologia': 'fa-brain',
+            'cardiologista': 'fa-heart', 'cardiologia': 'fa-heart',
+            'enfermeiro': 'fa-user-nurse', 'enfermeira': 'fa-user-nurse',
+            'fisioterapeuta': 'fa-hands', 'fisioterapia': 'fa-hands',
+            'psicologo': 'fa-brain', 'psicologia': 'fa-brain',
+            'veterinario': 'fa-paw', 'veterinaria': 'fa-paw',
+            
+            // Construção/Reforma
+            'pedreiro': 'fa-hammer', 'pedreiros': 'fa-hammer',
+            'construtor': 'fa-hard-hat', 'construtora': 'fa-hard-hat',
+            'reformas': 'fa-hammer', 'reforma': 'fa-hammer',
+            'alvenaria': 'fa-hammer', 'alvenar': 'fa-hammer',
+            'pintor': 'fa-paint-roller', 'pintura': 'fa-paint-roller',
+            'marceneiro': 'fa-tree', 'marcenaria': 'fa-tree',
+            'serralheiro': 'fa-door-open', 'serralheria': 'fa-door-open',
+            'vidraceiro': 'fa-window-maximize', 'vidracaria': 'fa-window-maximize',
+            'azulejista': 'fa-border-all', 'azulejos': 'fa-border-all',
+            'gesso': 'fa-object-group', 'gessos': 'fa-object-group',
+            
+            // Hidráulica
+            'encanador': 'fa-faucet', 'encanadores': 'fa-faucet',
+            'hidraulico': 'fa-faucet', 'hidraulica': 'fa-faucet',
+            'torneira': 'fa-faucet', 'torneiras': 'fa-faucet',
+            'vazamento': 'fa-water', 'vazamentos': 'fa-water',
+            'bombas': 'fa-water', 'bomba': 'fa-water',
+            
+            // Elétrica
+            'eletricista': 'fa-bolt', 'eletricistas': 'fa-bolt',
+            'eletrico': 'fa-bolt', 'eletrica': 'fa-bolt',
+            'eletricidade': 'fa-bolt', 'eletricidade': 'fa-bolt',
+            'iluminacao': 'fa-lightbulb', 'iluminação': 'fa-lightbulb',
+            'lampadas': 'fa-lightbulb', 'lâmpadas': 'fa-lightbulb',
+            'chuveiro': 'fa-shower', 'chuveiros': 'fa-shower',
+            'ar_condicionado': 'fa-snowflake', 'ar': 'fa-snowflake',
+            'ventilacao': 'fa-fan', 'ventilação': 'fa-fan',
+            
+            // Limpeza/Serviços Gerais
+            'limpeza': 'fa-broom', 'limpeza': 'fa-broom',
+            'servicos_gerais': 'fa-broom', 'serviços_gerais': 'fa-broom',
+            'faxina': 'fa-broom', 'faxineiro': 'fa-broom', 'faxineira': 'fa-broom',
+            'lavanderia': 'fa-tshirt', 'roupas': 'fa-tshirt',
+            'jardinagem': 'fa-leaf', 'jardineiro': 'fa-leaf', 'jardim': 'fa-leaf',
+            'paisagismo': 'fa-tree', 'paisagista': 'fa-tree',
+            'dedetizacao': 'fa-bug', 'dedetizador': 'fa-bug', 'pragas': 'fa-bug',
+            
+            // Transporte/Mudança
+            'mudanca': 'fa-truck', 'mudança': 'fa-truck', 'mudanças': 'fa-truck',
+            'transporte': 'fa-truck', 'transportadora': 'fa-truck',
+            'carreto': 'fa-truck', 'carretos': 'fa-truck',
+            'carro': 'fa-car', 'automovel': 'fa-car', 'automóvel': 'fa-car',
+            'moto': 'fa-motorcycle', 'motocicleta': 'fa-motorcycle',
+            'bicicleta': 'fa-bicycle', 'bike': 'fa-bicycle',
+            
+            // Tecnologia/Informática
+            'informatica': 'fa-laptop', 'informática': 'fa-laptop',
+            'computador': 'fa-desktop', 'computadores': 'fa-desktop',
+            'celular': 'fa-mobile-alt', 'telefones': 'fa-mobile-alt',
+            'tecnologia': 'fa-microchip', 'tech': 'fa-microchip',
+            'internet': 'fa-wifi', 'wifi': 'fa-wifi',
+            'rede': 'fa-network-wired', 'redes': 'fa-network-wired',
+            'camera': 'fa-camera', 'câmera': 'fa-camera', 'fotografia': 'fa-camera',
+            'video': 'fa-video', 'vídeo': 'fa-video', 'filmagem': 'fa-video',
+            'musica': 'fa-music', 'música': 'fa-music', 'musico': 'fa-music',
+            'som': 'fa-volume-up', 'audio': 'fa-volume-up', 'áudio': 'fa-volume-up',
+            
+            // Educação
+            'professor': 'fa-chalkboard-teacher', 'professora': 'fa-chalkboard-teacher',
+            'aulas': 'fa-graduation-cap', 'aula': 'fa-graduation-cap',
+            'curso': 'fa-book', 'cursos': 'fa-book',
+            'escola': 'fa-school', 'educacao': 'fa-graduation-cap', 'educação': 'fa-graduation-cap',
+            
+            // Alimentação
+            'restaurante': 'fa-utensils', 'restaurante': 'fa-utensils',
+            'comida': 'fa-utensils', 'food': 'fa-utensils',
+            'churrasco': 'fa-fire', 'churrasqueiro': 'fa-fire',
+            'pizzaria': 'fa-pizza-slice', 'pizza': 'fa-pizza-slice',
+            'padaria': 'fa-bread-slice', 'padeiro': 'fa-bread-slice',
+            'confeitaria': 'fa-birthday-cake', 'confeiteiro': 'fa-birthday-cake',
+            'cafeteria': 'fa-coffee', 'cafe': 'fa-coffee', 'café': 'fa-coffee',
+            'bar': 'fa-beer', 'cerveja': 'fa-beer',
+            'amburguer': 'fa-hamburger', 'hamburguer': 'fa-hamburger',
+            
+            // Serviços Profissionais
+            'advogado': 'fa-gavel', 'advocacia': 'fa-gavel', 'advogada': 'fa-gavel',
+            'contabil': 'fa-calculator', 'contabilidade': 'fa-calculator', 'contador': 'fa-calculator',
+            'arquiteto': 'fa-drafting-compass', 'arquitetura': 'fa-drafting-compass',
+            'engenheiro': 'fa-drafting-compass', 'engenharia': 'fa-drafting-compass',
+            'designer': 'fa-palette', 'design': 'fa-palette',
+            'fotografo': 'fa-camera', 'fotógrafo': 'fa-camera', 'fotografia': 'fa-camera',
+            'maquiador': 'fa-magic', 'maquiagem': 'fa-magic',
+            'cabeleireiro': 'fa-cut', 'cabeleireira': 'fa-cut', 'salao': 'fa-cut', 'salão': 'fa-cut',
+            'barbeiro': 'fa-cut', 'barbearia': 'fa-cut',
+            'manicure': 'fa-hand-sparkles', 'pedicure': 'fa-hand-sparkles',
+            'estetica': 'fa-spa', 'estética': 'fa-spa', 'esteticista': 'fa-spa',
+            'massagista': 'fa-hands', 'massagem': 'fa-hands',
+            
+            // Animais/Pet
+            'pet': 'fa-paw', 'pets': 'fa-paw', 'animal': 'fa-paw', 'animais': 'fa-paw',
+            'cachorro': 'fa-dog', 'cachorros': 'fa-dog', 'gato': 'fa-cat', 'gatos': 'fa-cat',
+            'peixe': 'fa-fish', 'passaro': 'fa-dove', 'pássaro': 'fa-dove',
+            'petshop': 'fa-paw', 'racao': 'fa-paw', 'ração': 'fa-paw',
+            
+            // Comércio/Vendas
+            'loja': 'fa-store', 'lojas': 'fa-store', 'comercio': 'fa-store', 'comércio': 'fa-store',
+            'supermercado': 'fa-shopping-cart', 'mercado': 'fa-shopping-cart',
+            'roupas': 'fa-tshirt', 'moda': 'fa-tshirt',
+            'calcados': 'fa-shoe-prints', 'calçados': 'fa-shoe-prints', 'sapatos': 'fa-shoe-prints',
+            'joalheria': 'fa-gem', 'joias': 'fa-gem',
+            'livraria': 'fa-book', 'livros': 'fa-book',
+            'floricultura': 'fa-seedling', 'flores': 'fa-seedling',
+            
+            // Finanças
+            'banco': 'fa-university', 'financeiro': 'fa-money-bill',
+            'investimento': 'fa-chart-line', 'investimentos': 'fa-chart-line',
+            'seguro': 'fa-shield-alt', 'seguros': 'fa-shield-alt',
+            'imobiliaria': 'fa-home', 'imobiliária': 'fa-home', 'imovel': 'fa-home', 'imóvel': 'fa-home',
+            
+            // Outros
+            'outro': 'fa-briefcase', 'outros': 'fa-briefcase', 'outros': 'fa-briefcase',
+            'diversos': 'fa-ellipsis-h', 'variados': 'fa-ellipsis-h',
+            'geral': 'fa-th', 'generico': 'fa-th', 'genérico': 'fa-th',
+            'personalizado': 'fa-cog', 'customizado': 'fa-cog',
+            'novo': 'fa-plus-circle', 'novidade': 'fa-star',
+            'premium': 'fa-crown', 'vip': 'fa-crown',
+            'rapido': 'fa-bolt', 'rápido': 'fa-bolt', 'urgente': 'fa-bolt',
+            'qualidade': 'fa-award', 'qualificado': 'fa-award',
+            'confiavel': 'fa-check-circle', 'confiável': 'fa-check-circle',
+            'recomendado': 'fa-thumbs-up', 'indicado': 'fa-thumbs-up',
+            'avaliado': 'fa-star', 'avaliacao': 'fa-star', 'avaliação': 'fa-star',
+            'popular': 'fa-fire', 'mais_pedidos': 'fa-fire',
+            'economico': 'fa-tag', 'econômico': 'fa-tag', 'barato': 'fa-tag',
+            'promocao': 'fa-percent', 'promoção': 'fa-percent', 'desconto': 'fa-percent',
+            'frete': 'fa-truck', 'entrega': 'fa-shipping-fast', 'entregas': 'fa-shipping-fast',
+            'agendamento': 'fa-calendar', 'agendamentos': 'fa-calendar', 'agenda': 'fa-calendar',
+            'horario': 'fa-clock', 'horário': 'fa-clock', 'funcionamento': 'fa-clock',
+            'localizacao': 'fa-map-marker-alt', 'localização': 'fa-map-marker-alt', 'endereco': 'fa-map-marker-alt', 'endereço': 'fa-map-marker-alt',
+            'contato': 'fa-phone', 'contatos': 'fa-phone', 'telefone': 'fa-phone',
+            'email': 'fa-envelope', 'e-mail': 'fa-envelope', 'correio': 'fa-envelope',
+            'site': 'fa-globe', 'website': 'fa-globe', 'web': 'fa-globe',
+            'redes_sociais': 'fa-share-alt', 'social': 'fa-share-alt',
+            'whatsapp': 'fa-whatsapp', 'zap': 'fa-whatsapp',
+            'instagram': 'fa-instagram', 'facebook': 'fa-facebook',
+            'youtube': 'fa-youtube', 'tiktok': 'fa-tiktok',
+            'twitter': 'fa-twitter', 'linkedin': 'fa-linkedin',
+        };
         
         this.init();
     }
@@ -347,8 +478,12 @@ class ProfessionalsApp {
         document.getElementById('newCategoryName').value = '';
         this.selectedIcon = 'fa-briefcase';
         this.updateIconPreview();
-        this.loadIconsGrid();
         document.getElementById('newCategoryName').focus();
+        
+        // Adicionar evento de input para sugerir ícone
+        document.getElementById('newCategoryName').addEventListener('input', (e) => {
+            this.suggestIcon(e.target.value);
+        });
     }
 
     // Fechar modal de adicionar categoria
@@ -356,34 +491,34 @@ class ProfessionalsApp {
         document.getElementById('categoryModal').classList.remove('active');
     }
 
-    // Carregar grid de ícones
-    loadIconsGrid() {
-        const grid = document.getElementById('iconsGrid');
-        grid.innerHTML = this.availableIcons.map(icon => 
-            `<div class="icon-item ${icon === this.selectedIcon ? 'selected' : ''}" data-icon="${icon}">
-                <i class="fas ${icon}"></i>
-            </div>`
-        ).join('');
+    // Sugerir ícone baseado no nome da categoria
+    suggestIcon(categoryName) {
+        const normalizedName = categoryName.toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .trim();
         
-        // Adicionar eventos de clique
-        grid.querySelectorAll('.icon-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const icon = e.currentTarget.dataset.icon;
-                this.selectIcon(icon);
-            });
-        });
-    }
-
-    // Selecionar ícone
-    selectIcon(icon) {
-        this.selectedIcon = icon;
-        document.getElementById('newCategoryIcon').value = icon;
+        // Procurar correspondência no mapeamento
+        let suggestedIcon = 'fa-briefcase'; // Ícone padrão
+        
+        for (const [keyword, icon] of Object.entries(this.iconMapping)) {
+            if (normalizedName.includes(keyword) || keyword.includes(normalizedName)) {
+                suggestedIcon = icon;
+                break;
+            }
+        }
+        
+        // Se não encontrou correspondência exata, tentar busca parcial
+        if (suggestedIcon === 'fa-briefcase' && normalizedName.length > 2) {
+            for (const [keyword, icon] of Object.entries(this.iconMapping)) {
+                if (normalizedName.substring(0, 3) === keyword.substring(0, 3)) {
+                    suggestedIcon = icon;
+                    break;
+                }
+            }
+        }
+        
+        this.selectedIcon = suggestedIcon;
         this.updateIconPreview();
-        
-        // Atualizar seleção visual
-        document.querySelectorAll('.icon-item').forEach(item => {
-            item.classList.toggle('selected', item.dataset.icon === icon);
-        });
     }
 
     // Atualizar preview do ícone
@@ -395,7 +530,6 @@ class ProfessionalsApp {
     // Adicionar nova categoria
     addNewCategory() {
         const name = document.getElementById('newCategoryName').value.trim();
-        const icon = document.getElementById('newCategoryIcon').value.trim();
         
         if (!name) {
             this.showToast('Digite o nome da categoria!', 'error');
@@ -415,11 +549,11 @@ class ProfessionalsApp {
             return;
         }
         
-        // Adicionar nova categoria
+        // Adicionar nova categoria com ícone sugerido automaticamente
         const newCategory = {
             value: value,
             name: name,
-            icon: icon || 'fa-briefcase'
+            icon: this.selectedIcon
         };
         
         customCategories.push(newCategory);
