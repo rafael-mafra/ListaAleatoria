@@ -91,6 +91,30 @@ class ProfessionalsApp {
         this.deletingId = null;
         this.currentRating = 0;
         this.currentView = 'list'; // 'list' ou 'grid'
+        this.selectedIcon = 'fa-briefcase'; // Ícone padrão
+        
+        // Lista de ícones disponíveis para seleção
+        this.availableIcons = [
+            'fa-user-md', 'fa-user-nurse', 'fa-user-injured', 'fa-tooth', 'fa-brain', 'fa-heart', 'fa-eye',
+            'fa-hammer', 'fa-wrench', 'fa-screwdriver', 'fa-hard-hat', 'fa-drafting-compass', 'fa-ruler-combined',
+            'fa-faucet', 'fa-shower', 'fa-toilet', 'fa-bath', 'fa-hot-tub', 'fa-pipe-slice',
+            'fa-bolt', 'fa-plug', 'fa-lightbulb', 'fa-fan', 'fa-thermometer-half', 'fa-wind',
+            'fa-broom', 'fa-spray-can', 'fa-recycle', 'fa-trash', 'fa-dumpster', 'fa-box-open',
+            'fa-car', 'fa-truck', 'fa-bus', 'fa-motorcycle', 'fa-bicycle', 'fa-plane',
+            'fa-home', 'fa-building', 'fa-warehouse', 'fa-store', 'fa-hotel', 'fa-hospital',
+            'fa-utensils', 'fa-utensil-spoon', 'fa-coffee', 'fa-wine-glass', 'fa-beer', 'fa-blender',
+            'fa-laptop', 'fa-desktop', 'fa-tablet-alt', 'fa-mobile-alt', 'fa-print', 'fa-keyboard',
+            'fa-camera', 'fa-video', 'fa-music', 'fa-microphone', 'fa-headphones', 'fa-volume-up',
+            'fa-book', 'fa-book-open', 'fa-graduation-cap', 'fa-chalkboard-teacher', 'fa-pen', 'fa-pencil-alt',
+            'fa-briefcase', 'fa-balance-scale', 'fa-gavel', 'fa-user-tie', 'fa-users', 'fa-user-plus',
+            'fa-heart', 'fa-hand-holding-heart', 'fa-hands-helping', 'fa-donate', 'fa-gift', 'fa-umbrella',
+            'fa-shield-alt', 'fa-lock', 'fa-key', 'fa-fingerprint', 'fa-id-card', 'fa-passport',
+            'fa-clock', 'fa-calendar', 'fa-bell', 'fa-envelope', 'fa-phone', 'fa-map-marker-alt',
+            'fa-star', 'fa-award', 'fa-trophy', 'fa-medal', 'fa-certificate', 'fa-check-circle',
+            'fa-leaf', 'fa-tree', 'fa-seedling', 'fa-sun', 'fa-cloud', 'fa-water',
+            'fa-dog', 'fa-cat', 'fa-paw', 'fa-fish', 'fa-dove', 'fa-horse',
+            'fa-shopping-cart', 'fa-shopping-bag', 'fa-credit-card', 'fa-wallet', 'fa-money-bill', 'fa-coins'
+        ];
         
         this.init();
     }
@@ -298,17 +322,74 @@ class ProfessionalsApp {
         return defaultCategories;
     }
 
+    // Obter ícones das categorias
+    getCategoryIcons() {
+        const customCategories = this.loadCustomCategories();
+        const defaultIcons = {
+            'medico': 'fa-user-md',
+            'pedreiro': 'fa-hammer',
+            'encanador': 'fa-faucet',
+            'eletricista': 'fa-bolt',
+            'servicos_gerais': 'fa-broom',
+            'outro': 'fa-briefcase'
+        };
+        
+        customCategories.forEach(cat => {
+            defaultIcons[cat.value] = cat.icon;
+        });
+        
+        return defaultIcons;
+    }
+
     // Abrir modal de adicionar categoria
     openCategoryModal() {
         document.getElementById('categoryModal').classList.add('active');
         document.getElementById('newCategoryName').value = '';
-        document.getElementById('newCategoryIcon').value = 'fa-briefcase';
+        this.selectedIcon = 'fa-briefcase';
+        this.updateIconPreview();
+        this.loadIconsGrid();
         document.getElementById('newCategoryName').focus();
     }
 
     // Fechar modal de adicionar categoria
     closeCategoryModal() {
         document.getElementById('categoryModal').classList.remove('active');
+    }
+
+    // Carregar grid de ícones
+    loadIconsGrid() {
+        const grid = document.getElementById('iconsGrid');
+        grid.innerHTML = this.availableIcons.map(icon => 
+            `<div class="icon-item ${icon === this.selectedIcon ? 'selected' : ''}" data-icon="${icon}">
+                <i class="fas ${icon}"></i>
+            </div>`
+        ).join('');
+        
+        // Adicionar eventos de clique
+        grid.querySelectorAll('.icon-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const icon = e.currentTarget.dataset.icon;
+                this.selectIcon(icon);
+            });
+        });
+    }
+
+    // Selecionar ícone
+    selectIcon(icon) {
+        this.selectedIcon = icon;
+        document.getElementById('newCategoryIcon').value = icon;
+        this.updateIconPreview();
+        
+        // Atualizar seleção visual
+        document.querySelectorAll('.icon-item').forEach(item => {
+            item.classList.toggle('selected', item.dataset.icon === icon);
+        });
+    }
+
+    // Atualizar preview do ícone
+    updateIconPreview() {
+        const preview = document.getElementById('iconPreview');
+        preview.innerHTML = `<i class="fas ${this.selectedIcon}"></i><span>${this.selectedIcon}</span>`;
     }
 
     // Adicionar nova categoria
@@ -426,31 +507,16 @@ class ProfessionalsApp {
 
     // Criar card do profissional
     createCard(professional) {
-        const categoryNames = {
-            'medico': 'Médico',
-            'pedreiro': 'Pedreiro',
-            'encanador': 'Encanador',
-            'eletricista': 'Eletricista',
-            'servicos_gerais': 'Serviços Gerais',
-            'outro': 'Outro'
-        };
-        
-        const categoryIcons = {
-            'medico': 'fa-user-md',
-            'pedreiro': 'fa-hammer',
-            'encanador': 'fa-faucet',
-            'eletricista': 'fa-bolt',
-            'servicos_gerais': 'fa-broom',
-            'outro': 'fa-briefcase'
-        };
+        const categoryNames = this.getCategoryNames();
+        const categoryIcons = this.getCategoryIcons();
         
         const stars = this.createStars(professional.nota);
         
         // Criar tags de categorias
         const categoriesTags = professional.categorias.map(cat => 
             `<span class="card-category">
-                <i class="fas ${categoryIcons[cat]}"></i>
-                ${categoryNames[cat]}
+                <i class="fas ${categoryIcons[cat] || 'fa-tag'}"></i>
+                ${categoryNames[cat] || cat}
             </span>`
         ).join('');
         
@@ -496,31 +562,16 @@ class ProfessionalsApp {
 
     // Criar linha da tabela
     createTableRow(professional) {
-        const categoryNames = {
-            'medico': 'Médico',
-            'pedreiro': 'Pedreiro',
-            'encanador': 'Encanador',
-            'eletricista': 'Eletricista',
-            'servicos_gerais': 'Serviços Gerais',
-            'outro': 'Outro'
-        };
-        
-        const categoryIcons = {
-            'medico': 'fa-user-md',
-            'pedreiro': 'fa-hammer',
-            'encanador': 'fa-faucet',
-            'eletricista': 'fa-bolt',
-            'servicos_gerais': 'fa-broom',
-            'outro': 'fa-briefcase'
-        };
+        const categoryNames = this.getCategoryNames();
+        const categoryIcons = this.getCategoryIcons();
         
         const stars = this.createStars(professional.nota);
         
         // Criar tags de categorias
         const categoriesTags = professional.categorias.map(cat => 
             `<span class="table-category">
-                <i class="fas ${categoryIcons[cat]}"></i>
-                ${categoryNames[cat]}
+                <i class="fas ${categoryIcons[cat] || 'fa-tag'}"></i>
+                ${categoryNames[cat] || cat}
             </span>`
         ).join(' ');
         

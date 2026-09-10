@@ -260,9 +260,15 @@
                     <input type="text" id="newCategoryName" placeholder="Ex: Dentista, Eletrônico, etc." required>
                 </div>
                 <div class="form-group">
-                    <label for="newCategoryIcon">Ícone (Font Awesome)</label>
-                    <input type="text" id="newCategoryIcon" placeholder="Ex: fa-tooth, fa-laptop, etc." value="fa-briefcase">
-                    <small class="help-text">Use classes do Font Awesome (ex: fa-star, fa-heart, fa-check)</small>
+                    <label>Selecione um Ícone</label>
+                    <div class="icon-preview" id="iconPreview">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Ícone selecionado</span>
+                    </div>
+                    <input type="hidden" id="newCategoryIcon" value="fa-briefcase">
+                    <div class="icons-grid" id="iconsGrid">
+                        <!-- Ícones serão carregados via JavaScript -->
+                    </div>
                 </div>
             </div>
             
