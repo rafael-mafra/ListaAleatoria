@@ -1,4 +1,4 @@
-# 📋 Lista de Indicações de Profissionais
+# 📋 Lista de Contatos do grupo Aleatórios SERPRO
 
 Uma página web pública para gerenciar e exibir indicações de profissionais (médicos, pedreiros, encanadores, eletricistas, etc.).
 
